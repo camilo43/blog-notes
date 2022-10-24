@@ -25,7 +25,7 @@
     "server": "json-server -p3001 --watch db.json",
     "server_phonebook": "json-server -p3004 --watch phoneBook_db.json",
     "server_post": "json-server -p3005 --watch db.json",
-    "dev": "nodemon index_express.js"
+    "dev": "nodemon index.js"
   },
   "eslintConfig": {
     "extends": [
