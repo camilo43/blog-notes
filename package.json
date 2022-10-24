@@ -18,7 +18,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node index_express.js",
     "start2": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
