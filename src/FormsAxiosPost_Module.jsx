@@ -44,7 +44,11 @@ export const FormsAxiosPostModule = () => {
     }
     
     const notesToShow = showAll? notes: notes.filter(note => note.important === true)
-    console.log("NOTES TO SHOW", notesToShow)
+    console.log("SHOW ALL", showAll)
+    console.log("NOTES", notes)
+    console.log("FILTERED NOTES", notes.filter(note => note.important === true))
+    console.log("NOTES_TO_SHOW", notesToShow)
+
 
     const toggleImportanceOf = (id) => {
       
