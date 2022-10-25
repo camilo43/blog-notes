@@ -1,9 +1,19 @@
 import express from 'express'
 import cors from 'cors'
+// import path  from 'path'
 const app = express()
-app.use(express.json())
 
+app.use(express.json())
+app.use(express.static('build'))
 app.use(cors())
+
+//****** Alternative fixing *******
+// if (process.env.NODE_ENV === 'production'){
+//   app.use(express.static('build'));
+//   app.get('*', (req, res)=>{
+//     res.sendFile(path.resolve(__dirname, 'build', 'index.hmtl'))
+//   } )
+// }
 
 let notes = [  
   {
@@ -25,9 +35,9 @@ let notes = [
   }
 ]
 
-
-app.get('/', (request, response) => {
+app.get('/notes/', (request, response) => {
   response.json(notes)
+  
 })
 
 app.put('/notes/:id' , (req, res)=>{   
