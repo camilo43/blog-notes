@@ -44,9 +44,11 @@ notesRouter.post('/', expressAsyncHandler(async(request, response) => {
 notesRouter.put('/:id' , expressAsyncHandler(async(request, response)=>{   
   const id = request.params.id
   const body = request.body.important
-  const responseServer = await Note.findByIdAndUpdate(id,{important:body}, {new:true})
+  const responseServer = await Note.findByIdAndUpdate(request.params.id,request.body, {new:true})  
   return response.json(responseServer)
+  
 })) 
+
 
 // notesRouter.get('/:id', (request, response) => {
 //   const id = Number(request.params.id)

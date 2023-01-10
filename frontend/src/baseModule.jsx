@@ -16,7 +16,7 @@ export const FormsAxiosPostModule = () => {
     
     //const [id, setId] = useState("") 
 
-    useEffect(() => {      
+    useEffect(() => {  
        noteService.getAll()
        .then(initialNotes => setNotes(initialNotes))              
        }, [newNote, refresh])
@@ -39,15 +39,20 @@ export const FormsAxiosPostModule = () => {
     }
     //const notesToShow = showAll? notes: notes.filter(note => note.important === true)
    
-    const toggleImportanceOf = (id) => {
-      console.log("NOTES", notes)
+    const toggleImportanceOf = async (id) => {
         // const noteFilter =  notes.filter(n => n.id === id)
-        // console.log("note", noteFilter)       
-        const exampleNotesId = notes.map(note=> note.id !== id? note : {...note, important:!note.important})
-        setNotes(exampleNotesId)
-        const algo = exampleNotesId.filter(e=> e.id ===id)
-        noteService.update(id, {...algo, important:!algo.important}) 
+        // console.log("note", noteFilter)
+        console.log("OLD NOTES", notes)       
+        const a  = notes.map(note=> note.id !== id? note : {...note, important:!note.important})
+        console.log("newNotes", a)
+        const algo = a.filter(e=> e.id ===id)   
+        console.log("ALGO", algo)     
+        noteService.update(id, algo[0])
+        setNotes(a)
+                // console.log("ALGO2", algo)        
+        // return setRefresh(!refresh)
         }
+        
         //     .catch(error => {    
         //       console.log("CATCHING ERRORS")           
         //       setErrorMessage(`the note '${note.content}' was already deleted from server`)  

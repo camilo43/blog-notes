@@ -11,9 +11,10 @@ const getAll = () => {
     return axios.post(`${baseUrl}notes`, newObject).then(response => response)
   }
   
-  const update = (id, newObject) => {
+  const update = async (id, newObject) => {
     //axios.put(`${baseUrl}notes/${id}`, newObject).then(response => console.log("PUT_AXIOS", response))
-    return axios.put(`${baseUrl}notes/${id}`, newObject).then(response => response.data)
+    const response = await axios.put(`${baseUrl}notes/${id}`, newObject)
+    return response.data
   }
 
   const deleting = (id) => {
