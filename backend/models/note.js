@@ -4,17 +4,18 @@ import mongoose from 'mongoose'
 import express from 'express'
 const notesRouter = express.Router();
 
-const app = express()
-
-const url = process.env.MONGODB_URI
-
-mongoose.connect(url)
-  .then(result => {console.log('connected to MongoDB')})  
-  .catch((error) => {console.log('error connecting to MongoDB:', error.message)})
-
 const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean
+  content: {
+    type: String,
+    required: true,
+    minlength: 5
+  },
+  date: Date,
+  important: Boolean,
+  users: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 })
 
 noteSchema.set('toJSON', {
