@@ -79,11 +79,7 @@ notesRouter.get('/user', authenticateToken, expressAsyncHandler(async(request, r
 notesRouter.post('/', expressAsyncHandler(async(request, response) => { 
   response.setHeader('authorization', process.env.SECRET)
   const body = request.body 
-  // const token = jwt.sign(body, process.env.SECRET)
-
-  // if(body.content==="test3"){
-  //   response.json({token})
-  // }
+ 
 
   // const decodedToken = jwt.verify(token, process.env.SECRET)
   // if(!decodedToken.id){

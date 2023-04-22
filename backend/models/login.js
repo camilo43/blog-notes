@@ -17,7 +17,8 @@ const loginSchema = new mongoose.Schema({
     required: true
   },
   password: {
-    type: String
+    type: String,
+    minlength:3
   }
 }, {collection:'users'})
 
@@ -30,6 +31,11 @@ loginSchema.set('toJSON', {
 })
 
 loginSchema.plugin(uniqueValidator)
+
+loginSchema.post('validate', function(error, doc, next) {
+  console.log(error) // Add this line to log the error
+  next(error)
+})
 
 const Login = new mongoose.model('Login', loginSchema)
 export default Login

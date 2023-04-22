@@ -1,0 +1,145 @@
+import express from 'express'
+const loginRouter = express.Router();
+const notesRouter = express.Router();
+import bcrypt from 'bcrypt'
+import expressAsyncHandler from 'express-async-handler'
+import jsonwebtoken from 'jsonwebtoken'
+import Login from '../models/login.js';
+
+import Note from '../models/note.js';
+import User from '../models/user.js';
+
+let accessToken='' 
+
+const tokenUser = async (user) => {
+  return jwt.sign({user}, process.env.SECRET, {expiresIn:"5s"})
+}
+
+//>>>NOT USED BECAUSE THE HEADERS COULDNT BE CALLED USING HTTP<<<
+    // const accessAuthorization = (request, response, next) => {
+    // const headerToken = request.headers.authorization
+    // if(!headerToken){
+    //   response.send('Access Denied')
+    // }else{
+    //   jwt.verify(headerToken, process.env.SECRET, (err, user)=>{
+    //     if(err){
+    //       response.send('Access Denied, token expired or incorrect')
+    //     }else{
+    //       next()
+    //     }
+    //   })
+    // }}
+
+  
+//>>>TRIED BUT IT WASNT SUCCESFUL
+// export const verifyToken = (request, response, next) => {
+//   console.log("ACCESS TOKEN", accessToken)
+//     if(!accessToken){
+//       console.log(">>>>>>EL ACCESO FUE DENEGADO")
+//       response.send('Access Denied')
+//     }else{
+//       jwt.verify(accessToken, process.env.SECRET, (err, user)=>{
+//         if(err){
+//           console.log("******PROBLEMAS VERIFICANDO", err)
+//           response.send('Access Denied, token expired or incorrect')
+//         }else{
+//           console.log("+++++++VERIFICACIon ACEPTADA")
+//           next()
+//         }
+//       })
+//     }
+//   }
+
+const getTokenFrom = request => { 
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')  }
+    return null}
+   
+loginRouter.get('/api/notes/get', async(request, response)=>{  
+  console.log("==============> enterGET")
+  response.status(200).header('authorization', accessToken)
+  const test = await Note.find({})  
+  response.json(test)
+  
+})
+
+loginRouter.post('/', async (request, response, next) => {  
+  console.log("THIS IS loginRouter.post / ENTERING")
+  const jwt = jsonwebtoken
+  // const bodyBase = request.body
+  const body = request.body
+  const decodedToken = jsonwebtoken.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {return response.status(401).json({ error: 'token invalid' })}  
+  const user = await User.findById(decodedToken.id)
+  const note = new Note({
+    content: body.content,
+    important: body.important === undefined ? false : body.important,
+    user: user._id
+  })
+
+  const savedNote = await note.save()
+  user.notes = user.notes.concat(savedNote._id)
+  await user.save()
+
+  response.json(savedNote)
+  //>>>TRIED, UNSUCCESSFUL
+  // const saltRounds = 10
+  // const passwordHash = await bcrypt.hash(bodyBase.password, saltRounds)
+  // const repeatedName = await Login.find({name:bodyBase.name})
+ 
+  // try{
+  //   if(repeatedName==false){  
+  //     const user = new Login({
+  //       username:bodyBase.username, 
+  //       name:bodyBase.name, 
+  //       password:passwordHash})
+        
+  //       accessToken = await tokenUser(user)
+  //       const savedUser = await user.save()
+              
+  //       response.status(200).header('authorization', accessToken).json(savedUser)
+
+        //response.status(200).header('authorization', accessToken).json({message:"Access granted", token:accessToken})
+        // const authToken = new Headers()
+        // console.log("AUTHORIZATION HEADER", authToken.get('authorization'))
+       
+  // }else{
+  //   response.status(409).json({ error: 'El usuario ya existe' })
+  // }
+  // }catch(err){
+  //   console.log("=====>ERROR")
+  //   if (err.name === 'MongoError' && err.code === 11000) {
+  //     res.status(409).send({ message: 'Username or email is already taken' });
+  //   } else {
+  //     next(err);
+  // }
+  // }
+})
+
+// loginRouter.post('/', async (request, response) => {
+//     const body = request.body 
+//     const saltRounds = 10
+//     const passwordHash = await bcrypt.hash(body.password, saltRounds)
+
+//     // const token = jwt.sign(body, process.env.SECRET)
+//     // response.json({token})
+
+//     const login = new Login({
+//         username: body.username,
+//         name: body.name,
+//         password: passwordHash
+//       })   
+      
+//       try{
+//         const savedLogin = await login.save()
+//         // user.notes = user.notes.concat(savedNote._id)
+//         response.json(savedLogin)
+        
+//       }catch(error){
+//         console.error(error)
+//         response.status(500).json({ message: "Lo sentimos, en este momento no podemos completar su transacción" });        
+//     }
+// });        
+     
+  export default loginRouter

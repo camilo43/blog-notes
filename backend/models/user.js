@@ -23,4 +23,5 @@ userSchema.set('toJSON', {
 })
 
 const User = new mongoose.model('User', userSchema)
+
 export default User
